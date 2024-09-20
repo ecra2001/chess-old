@@ -121,9 +121,11 @@ public class ChessPiece {
                 new ChessPosition(row + direction, col + 1)
         };
         for (ChessPosition diagMove : diagonalMoves) {
-            ChessPiece target = board.getPiece(diagMove);
-            if (target != null && target.getTeamColor() != this.teamColor) {
-                moves.add(new ChessMove(myPosition, diagMove, null)); // Add a capture move
+            if (isValidPosition(diagMove.getRow(), diagMove.getColumn())) {
+                ChessPiece target=board.getPiece(diagMove);
+                if (target != null && target.getTeamColor() != this.teamColor) {
+                    moves.add(new ChessMove(myPosition, diagMove, null)); // Add a capture move
+                }
             }
         }
     }
@@ -156,7 +158,7 @@ public class ChessPiece {
     }
 
     private boolean isValidPosition(int row, int col) {
-        return row >= 0 && row < 8 && col >= 0 && col < 8;
+        return row >= 1 && row < 9 && col >= 1 && col < 9;
     }
     private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
         int row = myPosition.getRow();
