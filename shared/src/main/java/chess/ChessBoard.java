@@ -77,44 +77,25 @@ public class ChessBoard {
         squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true; // Check if the same instance
-        if (obj == null || getClass() != obj.getClass()) return false; // Null or different class
-        ChessBoard other = (ChessBoard) obj;
 
-        // Compare the contents of the squares
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                ChessPiece thisPiece = this.squares[row][col];
-                ChessPiece otherPiece = other.squares[row][col];
-                if (thisPiece == null && otherPiece != null || thisPiece != null && otherPiece == null) {
-                    return false; // One is null, the other is not
-                }
-                if (thisPiece != null && !thisPiece.equals(otherPiece)) {
-                    return false; // Pieces are not equal
-                }
-            }
-        }
-        return true; // All checks passed
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 1;
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                ChessPiece piece = squares[row][col];
-                result = 31 * result + (piece == null ? 0 : piece.hashCode());
-            }
-        }
-        return result;
-    }
 
     @Override
     public String toString() {
         return "ChessBoard{" +
                 "squares=" + Arrays.toString(squares) +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessBoard that=(ChessBoard) o;
+        return Arrays.deepEquals(squares, that.squares);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(squares);
     }
 }
