@@ -78,16 +78,37 @@ public class ChessBoard {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChessBoard that=(ChessBoard) o;
-        return Arrays.equals(squares, that.squares);
+    public boolean equals(Object obj) {
+        if (this == obj) return true; // Check if the same instance
+        if (obj == null || getClass() != obj.getClass()) return false; // Null or different class
+        ChessBoard other = (ChessBoard) obj;
+
+        // Compare the contents of the squares
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece thisPiece = this.squares[row][col];
+                ChessPiece otherPiece = other.squares[row][col];
+                if (thisPiece == null && otherPiece != null || thisPiece != null && otherPiece == null) {
+                    return false; // One is null, the other is not
+                }
+                if (thisPiece != null && !thisPiece.equals(otherPiece)) {
+                    return false; // Pieces are not equal
+                }
+            }
+        }
+        return true; // All checks passed
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        int result = 1;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = squares[row][col];
+                result = 31 * result + (piece == null ? 0 : piece.hashCode());
+            }
+        }
+        return result;
     }
 
     @Override
