@@ -115,8 +115,8 @@ public class ChessGame {
         ChessPosition kingPosition = findKingPosition(teamColor);
 
         // Check if any opposing piece can move to the king's position
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
                 ChessPiece opponentPiece = board.getPiece(new ChessPosition(row, col));
                 if (opponentPiece != null && opponentPiece.getTeamColor() != teamColor) {
                     Collection<ChessMove> moves = opponentPiece.pieceMoves(board, new ChessPosition(row, col));
@@ -133,8 +133,8 @@ public class ChessGame {
     }
 
     private ChessPosition findKingPosition(TeamColor teamColor) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
                     return new ChessPosition(row, col);
@@ -176,8 +176,8 @@ public class ChessGame {
     }
 
     private boolean hasValidMoves(TeamColor teamColor) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
+        for (int row = 1; row < 9; row++) {
+            for (int col = 1; col < 9; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(row, col));
