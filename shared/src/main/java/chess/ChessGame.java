@@ -132,7 +132,7 @@ public class ChessGame {
                 }
             }
         }
-        return null;  // Should not happen in a valid game
+        return null;
     }
 
     /**
@@ -145,16 +145,19 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             return false;
         }
-        // Check if the team has any valid move to escape check
+
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> validMoves = piece.pieceMoves(board, new ChessPosition(row, col));
                     for (ChessMove move : validMoves) {
-                        // Simulate the move and check if the team is still in check
                         ChessBoard tempBoard = simulateMove(board, move);
-                        if (!new ChessGame().isInCheck(teamColor)) {
+                        ChessGame tempGame = new ChessGame();
+                        tempGame.setBoard(tempBoard);
+                        tempGame.setTeamTurn(teamColor);
+
+                        if (!tempGame.isInCheck(teamColor)) {
                             return false;
                         }
                     }
@@ -165,12 +168,10 @@ public class ChessGame {
     }
 
     private ChessBoard simulateMove(ChessBoard originalBoard, ChessMove move) {
-        // Create a copy of the current board
         ChessBoard simulatedBoard = new ChessBoard();
 
-        // Copy all pieces from the original board to the simulated board
-        for (int row = 1; row <= 9; row++) {
-            for (int col = 1; col <= 9; col++) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = originalBoard.getPiece(position);
                 if (piece != null) {
@@ -179,10 +180,9 @@ public class ChessGame {
             }
         }
 
-        // Simulate the move on the copied board
         ChessPiece pieceToMove = simulatedBoard.getPiece(move.getStartPosition());
-        simulatedBoard.addPiece(move.getEndPosition(), pieceToMove);  // Move the piece to the new position
-        simulatedBoard.addPiece(move.getStartPosition(), null);  // Remove the piece from the original position
+        simulatedBoard.addPiece(move.getEndPosition(), pieceToMove);
+        simulatedBoard.addPiece(move.getStartPosition(), null);
 
         return simulatedBoard;
     }
@@ -196,15 +196,23 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (isInCheck(teamColor)) {
-            return false;  // It's not stalemate if the team is in check
+            return false;
         }
-        // Check if the team has any valid moves
+
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    if (!piece.pieceMoves(board, new ChessPosition(row, col)).isEmpty()) {
-                        return false;
+                    Collection<ChessMove> validMoves = piece.pieceMoves(board, new ChessPosition(row, col));
+                    for (ChessMove move : validMoves) {
+                        ChessBoard tempBoard = simulateMove(board, move);
+                        ChessGame tempGame = new ChessGame();
+                        tempGame.setBoard(tempBoard);
+                        tempGame.setTeamTurn(teamColor);
+
+                        if (!tempGame.isInCheck(teamColor)) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -227,6 +235,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return this.board;
+        return board;
     }
 }
