@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -73,9 +74,24 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
         if (piece == null) {
-            return null;  // No piece at the given position
+            return null;
         }
-        return piece.pieceMoves(board, startPosition);  // Get valid moves for the piece
+
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        // Simulation
+        for (ChessMove move : potentialMoves) {
+            ChessBoard tempBoard = simulateMove(board, move);
+            ChessGame tempGame = new ChessGame();
+            tempGame.setBoard(tempBoard);
+
+            if (!tempGame.isInCheck(piece.getTeamColor())) {
+                validMoves.add(move);
+            }
+        }
+
+        return validMoves;
     }
 
     /**
