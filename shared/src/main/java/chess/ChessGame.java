@@ -86,13 +86,24 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null || piece.getTeamColor() != teamTurn) {
+            throw new InvalidMoveException("Invalid move: not team's turn");
+        }
         if (validMoves == null || !validMoves.contains(move) || isInCheck(teamTurn)) {
             throw new InvalidMoveException("Invalid move");
         }
-        // Move the piece on the board
-        ChessPiece piece = board.getPiece(move.getStartPosition());
+
         board.addPiece(move.getEndPosition(), piece);
         board.addPiece(move.getStartPosition(), null);  // Remove piece from start position
+
+        // Pawn promotion
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            int promotionRow = (piece.getTeamColor() == TeamColor.WHITE) ? 8 : 1;
+            if (move.getEndPosition().getRow() == promotionRow && move.getPromotionPiece() != null) {
+                board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+            }
+        }
 
         // Handle turn switching after move
         teamTurn = (teamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
