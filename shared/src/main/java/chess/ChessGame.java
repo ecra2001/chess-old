@@ -86,7 +86,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (validMoves == null || !validMoves.contains(move)) {
+        if (validMoves == null || !validMoves.contains(move) || isInCheck(teamTurn)) {
             throw new InvalidMoveException("Invalid move");
         }
         // Move the piece on the board
