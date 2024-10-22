@@ -44,6 +44,9 @@ public class Server {
         Spark.get("/game", gameHandler::listGames);
         Spark.post("/game", gameHandler::createGame);
         Spark.put("/game", gameHandler::joinGame);
+        Spark.exception(BadRequestException.class, this::badRequestExceptionHandler);
+        Spark.exception(UnauthorizedException.class, this::unauthorizedExceptionHandler);
+        Spark.exception(Exception.class, this::genericExceptionHandler);
 
         // Register your endpoints and handle exceptions here.
 
@@ -61,18 +64,25 @@ public class Server {
 
     private Object clear(Request req, Response resp) {
 
-        try {
-            userService.clear();
-            GameService.clear(gameDAO);
+        userService.clear();
+        gameService.clear(gameDAO);
 
-            resp.status(200);
-            return "{}";
-        }
-        catch (Exception e) {
-            resp.status(500);
-            return "{ \"message\": \"Error: %s\"}".formatted(new Gson().toJson(e.getMessage()));
-        }
+        resp.status(200);
+        return "{}";
+    }
 
+    private void badRequestExceptionHandler(BadRequestException ex, Request req, Response resp) {
+        resp.status(400);
+        resp.body("{ \"message\": \"Error: bad request\" }");
+    }
 
+    private void unauthorizedExceptionHandler(UnauthorizedException ex, Request req, Response resp) {
+        resp.status(401);
+        resp.body("{ \"message\": \"Error: unauthorized\" }");
+    }
+
+    private void genericExceptionHandler(Exception ex, Request req, Response resp) {
+        resp.status(500);
+        resp.body("{ \"message\": \"Error: %s\" }".formatted(ex.getMessage()));
     }
 }

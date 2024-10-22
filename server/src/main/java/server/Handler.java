@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
+import dataaccess.BadRequestException;
 import model.GameData;
 import model.UserData;
 import model.AuthData;
@@ -20,76 +21,43 @@ public class Handler {
       this.gameService = gameService;
     }
 
-    public Object listGames(Request req, Response resp) {
-      try {
-        String authToken = req.headers("authorization");
-        HashSet<GameData> games = gameService.listGames(authToken);
-        resp.status(200);
-        return "{ \"games\": %s}".formatted(new Gson().toJson(games));
-      } catch (DataAccessException e) {
-        resp.status(401);
-        return "{ \"message\": \"Error: unauthorized\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
-      }
+    public Object listGames(Request req, Response resp) throws UnauthorizedException {
+      String authToken=req.headers("authorization");
+      HashSet<GameData> games=gameService.listGames(authToken);
+      resp.status(200);
+      return "{ \"games\": %s}".formatted(new Gson().toJson(games));
     }
 
-    public Object createGame(Request req, Response resp) {
+    public Object createGame(Request req, Response resp) throws BadRequestException, UnauthorizedException {
 
       if (!req.body().contains("\"gameName\":")) {
-        resp.status(400);
-        return "{ \"message\": \"Error: bad request\" }";
+        throw new BadRequestException("No gameName provided");
       }
+      String authToken = req.headers("authorization");
+      int gameID =  gameService.createGame(authToken);
 
-      try {
-        String authToken = req.headers("authorization");
-        int gameID =  gameService.createGame(authToken);
-        resp.status(200);
-        return "{ \"gameID\": %d }".formatted(gameID);
-      } catch (DataAccessException e) {
-        resp.status(401);
-        return "{ \"message\": \"Error: unauthorized\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
-      }
+      resp.status(200);
+      return "{ \"gameID\": %d }".formatted(gameID);
     }
 
-    public Object joinGame(Request req, Response resp) {
+    public Object joinGame(Request req, Response resp) throws BadRequestException, UnauthorizedException {
 
       if (!req.body().contains("\"gameID\":")) {
-        resp.status(400);
-        return "{ \"message\": \"Error: bad request\" }";
+        throw new BadRequestException("No gameID provided");
+      }
+      String authToken=req.headers("authorization");
+      record JoinGameData(String playerColor, int gameID) {
+      }
+      JoinGameData joinData=new Gson().fromJson(req.body(), JoinGameData.class);
+      boolean joinSuccess=gameService.joinGame(authToken, joinData.gameID(), joinData.playerColor());
+
+      if (!joinSuccess) {
+        resp.status(403);
+        return "{ \"message\": \"Error: already taken\" }";
       }
 
-      try {
-        String authToken = req.headers("authorization");
-        record JoinGameData(String playerColor, int gameID) {}
-        JoinGameData joinData = new Gson().fromJson(req.body(), JoinGameData.class);
-        int joinStatus =  gameService.joinGame(authToken, joinData.gameID(), joinData.playerColor());
-        if (joinStatus == 0) {
-          resp.status(200);
-          return "{}";
-        } else if (joinStatus == 1) {
-          resp.status(400);
-          return "{ \"message\": \"Error: bad request\" }";
-        } else if (joinStatus == 2) {
-          resp.status(403);
-          return "{ \"message\": \"Error: already taken\" }";
-        }
-        resp.status(200);
-        return "{}";
-      } catch (DataAccessException e) {
-        resp.status(400);
-        return "{ \"message\": \"Error: bad request\" }";
-      } catch (UnauthorizedException e) {
-        resp.status(401);
-        return "{ \"message\": \"Error: unauthorized\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
-      }
+      resp.status(200);
+      return "{}";
     }
   }
 
@@ -100,62 +68,38 @@ public class Handler {
       this.userService = userService;
     }
 
-    public Object register(Request req, Response resp) {
-
-      try {
-        UserData userData = new Gson().fromJson(req.body(), UserData.class);
-        AuthData authData = userService.createUser(userData);
-
-        if (authData == null) {
-          resp.status(400);
-          return "{ \"message\": \"Error: bad request\" }";
-        } else {
-          resp.status(200);
-          return new Gson().toJson(authData);
-        }
-
-      } catch (DataAccessException e) {
-        resp.status(403);
-        return "{ \"message\": \"Error: already taken\" }";
-      } catch (JsonSyntaxException e) {
-        resp.status(400);
-        return "{ \"message\": \"Error: bad request\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+    public Object register(Request req, Response resp) throws BadRequestException {
+      UserData userData = new Gson().fromJson(req.body(), UserData.class);
+      if (userData.username() == null || userData.password() == null) {
+        throw new BadRequestException("No username and/or password given");
       }
 
-
-    }
-
-    public Object login(Request req, Response resp) {
       try {
-        UserData userData = new Gson().fromJson(req.body(), UserData.class);
-        AuthData authData = userService.loginUser(userData);
+        AuthData authData = userService.createUser(userData);
         resp.status(200);
         return new Gson().toJson(authData);
-      } catch (DataAccessException e) {
-        resp.status(401);
-        return "{ \"message\": \"Error: unauthorized\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
+      } catch (BadRequestException e) {
+        resp.status(403);
+        return "{ \"message\": \"Error: already taken\" }";
       }
     }
 
-    public Object logout(Request req, Response resp) {
-      try {
-        String authToken = req.headers("authorization");
-        userService.logoutUser(authToken);
-        resp.status(200);
-        return "{}";
-      } catch (DataAccessException e) {
-        resp.status(401);
-        return "{ \"message\": \"Error: unauthorized\" }";
-      } catch (Exception e) {
-        resp.status(500);
-        return "{ \"message\": \"Error: %s\" }".formatted(e.getMessage());
-      }
+    public Object login(Request req, Response resp) throws UnauthorizedException, BadRequestException {
+      UserData userData = new Gson().fromJson(req.body(), UserData.class);
+
+      AuthData authData = userService.loginUser(userData);
+
+      resp.status(200);
+      return new Gson().toJson(authData);
+    }
+
+    public Object logout(Request req, Response resp) throws UnauthorizedException {
+      String authToken = req.headers("authorization");
+
+      userService.logoutUser(authToken);
+
+      resp.status(200);
+      return "{}";
     }
   }
 }
