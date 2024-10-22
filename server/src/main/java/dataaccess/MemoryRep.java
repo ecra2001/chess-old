@@ -58,11 +58,7 @@ public class MemoryRep {
 
     @Override
     public HashSet<GameData> listGames() {
-      HashSet<GameData> games = HashSet.newHashSet(16);
-      for (GameData game : db) {
-          games.add(game);
-      }
-      return games;
+      return db;
     }
     @Override
     public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
@@ -80,6 +76,24 @@ public class MemoryRep {
         }
       }
       throw new DataAccessException("Game not found, id: " + gameID);
+    }
+    @Override
+    public boolean gameExists(int gameID) {
+      for (GameData game : db) {
+        if (game.gameID() == gameID) {
+          return true;
+        }
+      }
+      return false;
+    }
+    @Override
+    public void updateGame(GameData game) {
+      try {
+        db.remove(getGame(game.gameID()));
+        db.add(game);
+      } catch (DataAccessException e) {
+        db.add(game);
+      }
     }
     @Override
     public void clear() {
