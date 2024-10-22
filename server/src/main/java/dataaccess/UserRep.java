@@ -3,8 +3,9 @@ package dataaccess;
 import model.UserData;
 
 public interface UserRep {
-  UserData getUser(String username);
-  void createUser(String username, String password, String email);
-  boolean authenticateUser(String username, String password);
+  UserData getUser(String username) throws DataAccessException;
+  void createUser(String username, String password, String email) throws DataAccessException;
+  void createUser(UserData user) throws DataAccessException;
+  boolean authenticateUser(String username, String password) throws DataAccessException;
   void clear();
 }
