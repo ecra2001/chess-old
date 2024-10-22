@@ -2,11 +2,8 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
-import chess.ChessGame;
 import model.GameData;
-import javax.xml.crypto.Data;
 import java.util.HashSet;
-import javax.swing.text.SimpleAttributeSet;
 
 public class MemoryRep {
 
@@ -17,10 +14,6 @@ public class MemoryRep {
       db = HashSet.newHashSet(16);
     }
 
-    @Override
-    public void addAuth(String authToken, String username) {
-      db.add(new AuthData(username, authToken));
-    }
     @Override
     public void addAuth(AuthData authData) {
       db.add(authData);
@@ -59,10 +52,6 @@ public class MemoryRep {
     @Override
     public HashSet<GameData> listGames() {
       return db;
-    }
-    @Override
-    public void createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
-      db.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
     }
     @Override
     public void createGame(GameData game) {
@@ -116,19 +105,6 @@ public class MemoryRep {
         }
       }
       throw new DataAccessException("User not found: " + username);
-    }
-    @Override
-    public void createUser(String username, String password, String email) throws DataAccessException {
-      try {
-        getUser(username);
-      }
-      catch (DataAccessException e) {
-        db.add(new UserData(username, password, email));
-        return;
-      }
-
-      throw new DataAccessException("User already exists: " + username);
-
     }
     @Override
     public void createUser(UserData user) throws DataAccessException {

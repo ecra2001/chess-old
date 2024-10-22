@@ -7,7 +7,6 @@ import dataaccess.UnauthorizedException;
 import model.GameData;
 import model.UserData;
 import model.AuthData;
-import dataaccess.GameRep;
 import service.Service.GameService;
 import spark.Request;
 import spark.Response;
