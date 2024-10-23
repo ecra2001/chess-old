@@ -32,21 +32,21 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("Create Valid User")
-  void createUserTestPositive() throws BadRequestException, DataAccessException {
+  void newUserTestPositive() throws BadRequestException, DataAccessException {
     AuthData resultAuth = userService.createUser(defaultUser);
     Assertions.assertEquals(authDAO.getAuth(resultAuth.authToken()), resultAuth);
   }
 
   @Test
   @DisplayName("Create Invalid User")
-  void createUserTestNegative() throws BadRequestException {
+  void newUserTestNegative() throws BadRequestException {
     userService.createUser(defaultUser);
     Assertions.assertThrows(BadRequestException.class, () -> userService.createUser(defaultUser));
   }
 
   @Test
   @DisplayName("Proper Login User")
-  void loginUserTestPositive() throws BadRequestException, UnauthorizedException, DataAccessException {
+  void existingUserTestPositive() throws BadRequestException, UnauthorizedException, DataAccessException {
     userService.createUser(defaultUser);
     AuthData authData = userService.loginUser(defaultUser);
     Assertions.assertEquals(authDAO.getAuth(authData.authToken()), authData);
@@ -54,7 +54,7 @@ public class UserServiceTest {
 
   @Test
   @DisplayName("Improper Login User")
-  void loginUserTestNegative() throws BadRequestException {
+  void existingUserTestNegative() throws BadRequestException {
     Assertions.assertThrows(UnauthorizedException.class, () -> userService.loginUser(defaultUser));
 
     userService.createUser(defaultUser);

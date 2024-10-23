@@ -36,17 +36,17 @@ public class GameServiceTest {
 
   @Test
   @DisplayName("Create Valid Game")
-  void createGameTestPositive() throws UnauthorizedException {
-    int gameID1 = gameService.createGame(authData.authToken());
-    Assertions.assertTrue(gameDAO.gameExists(gameID1));
+  void addGameTestPositive() throws UnauthorizedException {
+    int game1 = gameService.createGame(authData.authToken());
+    Assertions.assertTrue(gameDAO.gameExists(game1));
 
-    int gameID2 = gameService.createGame(authData.authToken());
-    Assertions.assertNotEquals(gameID1, gameID2);
+    int game2 = gameService.createGame(authData.authToken());
+    Assertions.assertNotEquals(game1, game2);
   }
 
   @Test
   @DisplayName("Create Invalid Game")
-  void createGameTestNegative() throws UnauthorizedException {
+  void addGameTestNegative() throws UnauthorizedException {
     Assertions.assertThrows(UnauthorizedException.class, () -> gameService.createGame("badToken"));
   }
 
@@ -74,22 +74,22 @@ public class GameServiceTest {
   @Test
   @DisplayName("Proper Join Game")
   void joinGameTestPositive() throws UnauthorizedException, BadRequestException, DataAccessException {
-    int gameID = gameService.createGame(authData.authToken());
+    int game = gameService.createGame(authData.authToken());
 
-    gameService.joinGame(authData.authToken(), gameID, "WHITE");
+    gameService.joinGame(authData.authToken(), game, "WHITE");
 
-    GameData expectedGameData = new GameData(gameID, authData.username(), null, null, null);
+    GameData expectedGameData = new GameData(game, authData.username(), null, null, null);
 
-    Assertions.assertEquals(expectedGameData, gameDAO.getGame(gameID));
+    Assertions.assertEquals(expectedGameData, gameDAO.getGame(game));
   }
 
   @Test
   @DisplayName("Improper Join Game")
   void joinGameTestNegative() throws UnauthorizedException {
-    int gameID = gameService.createGame(authData.authToken());
-    Assertions.assertThrows(UnauthorizedException.class, () -> gameService.joinGame("badToken", gameID, "WHITE"));
+    int game = gameService.createGame(authData.authToken());
+    Assertions.assertThrows(UnauthorizedException.class, () -> gameService.joinGame("badToken", game, "WHITE"));
     Assertions.assertThrows(BadRequestException.class, () -> gameService.joinGame(authData.authToken(), 11111, "WHITE"));
-    Assertions.assertThrows(BadRequestException.class, () -> gameService.joinGame(authData.authToken(), gameID, "INVALID"));
+    Assertions.assertThrows(BadRequestException.class, () -> gameService.joinGame(authData.authToken(), game, "INVALID"));
   }
 
   @Test
