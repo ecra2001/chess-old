@@ -2,10 +2,8 @@ package server;
 
 import service.Service;
 import spark.*;
-import com.google.gson.Gson;
 import dataaccess.*;
 import service.Service.GameService;
-import service.Service.UserService;
 
 public class Server {
 
@@ -47,11 +45,6 @@ public class Server {
         Spark.exception(BadRequestException.class, this::badRequestExceptionHandler);
         Spark.exception(UnauthorizedException.class, this::unauthorizedExceptionHandler);
         Spark.exception(Exception.class, this::genericExceptionHandler);
-
-        // Register your endpoints and handle exceptions here.
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
