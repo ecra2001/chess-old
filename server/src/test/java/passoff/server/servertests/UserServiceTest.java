@@ -1,4 +1,4 @@
-package passoff.server.serverTests;
+package passoff.server.servertests;
 
 
 import dataaccess.*;

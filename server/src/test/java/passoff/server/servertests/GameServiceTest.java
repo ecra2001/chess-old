@@ -1,11 +1,10 @@
-package passoff.server.serverTests;
+package passoff.server.servertests;
 
 
 import dataaccess.*;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Assertions.*;
 import service.Service.GameService;
 
 import java.util.HashSet;

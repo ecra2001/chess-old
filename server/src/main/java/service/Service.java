@@ -78,10 +78,10 @@ public class Service {
       }
 
       if ("WHITE".equalsIgnoreCase(color)) {
-        if (whiteUser != null) return false; // Spot taken
+        if (whiteUser != null) {return false;} // Spot taken
         whiteUser = authData.username();
       } else if ("BLACK".equalsIgnoreCase(color)) {
-        if (blackUser != null) return false; // Spot taken
+        if (blackUser != null) {return false;} // Spot taken
         blackUser = authData.username();
       }
 
