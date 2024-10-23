@@ -178,16 +178,13 @@ public class ChessPiece {
     private boolean isValidPosition(int row, int col) {
         return row >= 1 && row < 9 && col >= 1 && col < 9;
     }
-    private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+    private void addMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int[][] moveOffsets) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        int[][] knightMoves = {
-                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
-        };
 
-        for (int[] move : knightMoves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
+        for (int[] offset : moveOffsets) {
+            int newRow = row + offset[0];
+            int newCol = col + offset[1];
             if (isValidPosition(newRow, newCol)) {
                 ChessPosition newPosition = new ChessPosition(newRow, newCol);
                 ChessPiece target = board.getPiece(newPosition);
@@ -197,23 +194,18 @@ public class ChessPiece {
             }
         }
     }
+
+    private void addKnightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] knightMoves = {
+                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+        };
+        addMoves(board, myPosition, moves, knightMoves);
+    }
+
     private void addKingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
         int[][] kingMoves = {
                 {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
         };
-
-        for (int[] move : kingMoves) {
-            int newRow = row + move[0];
-            int newCol = col + move[1];
-            if (isValidPosition(newRow, newCol)) {
-                ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                ChessPiece target = board.getPiece(newPosition);
-                if (target == null || target.getTeamColor() != this.teamColor) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-            }
-        }
+        addMoves(board, myPosition, moves, kingMoves);
     }
 }
