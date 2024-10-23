@@ -137,9 +137,9 @@ public class ChessGame {
             for (int col = 1; col < 9; col++) {
                 ChessPiece opponentPiece = board.getPiece(new ChessPosition(row, col));
                 if (opponentPiece != null && opponentPiece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = opponentPiece.pieceMoves(board, new ChessPosition(row, col));
-                    for (ChessMove move : moves) {if (move.getEndPosition().equals(kingPosition)) {return true;}
-                    }
+                Collection<ChessMove> moves = opponentPiece.pieceMoves(board, new ChessPosition(row, col));
+                for (ChessMove move : moves) {if (move.getEndPosition().equals(kingPosition)) {return true;}
+                }
                 }
             }
         }
@@ -211,17 +211,17 @@ public class ChessGame {
             for (int col = 1; col <= 8; col++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(row, col));
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> validMoves = piece.pieceMoves(board, new ChessPosition(row, col));
-                    for (ChessMove move : validMoves) {
-                        ChessBoard tempBoard = simulateMove(board, move);
-                        ChessGame tempGame = new ChessGame();
-                        tempGame.setBoard(tempBoard);
-                        tempGame.setTeamTurn(teamColor);
+                Collection<ChessMove> validMoves = piece.pieceMoves(board, new ChessPosition(row, col));
+                for (ChessMove move : validMoves) {
+                ChessBoard tempBoard = simulateMove(board, move);
+                ChessGame tempGame = new ChessGame();
+                tempGame.setBoard(tempBoard);
+                tempGame.setTeamTurn(teamColor);
 
-                        if (!tempGame.isInCheck(teamColor)) {
-                            return false;
-                        }
-                    }
+                if (!tempGame.isInCheck(teamColor)) {
+                return false;
+                }
+                }
                 }
             }
         }
