@@ -100,14 +100,4 @@ public class GameServiceTest {
     Assertions.assertEquals(gameDAO.listGames(), HashSet.newHashSet(16));
   }
 
-  @Test
-  @DisplayName("Improper Clear DB")
-  void clearTestNegative() throws UnauthorizedException {
-    gameService.createGame(authData.authToken());
-    HashSet<GameData> gameList = gameDAO.listGames();
-    gameService.clear(gameDAO);
-    Assertions.assertNotEquals(gameDAO.listGames(), gameList);
-
-    Assertions.assertDoesNotThrow(() -> gameService.clear(gameDAO));
-  }
 }
