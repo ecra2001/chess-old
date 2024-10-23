@@ -76,10 +76,8 @@ public class Handler {
 
       try {
         AuthData authData = userService.createUser(userData);
-        RegisterResponse registerResponse = new RegisterResponse(userData.getUsername(), authData.getAuthToken());
-
         resp.status(200);
-        return new Gson().toJson(registerResponse);
+        return new Gson().toJson(authData);
       } catch (BadRequestException e) {
         resp.status(403);
         return "{ \"message\": \"Error: already taken\" }";
@@ -113,52 +111,7 @@ public class Handler {
         this.username = username;
         this.authToken = authToken;
       }
-
-      // Getter for username
-      public String getUsername() {
-        return username;
-      }
-
-      // Setter for username
-      public void setUsername(String username) {
-        this.username = username;
-      }
-
-      // Getter for authToken
-      public String getAuthToken() {
-        return authToken;
-      }
-
-      // Setter for authToken
-      public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-      }
     }
-    public class RegisterResponse {
-      private String username;
-      private String authToken;
 
-      public RegisterResponse(String username, String authToken) {
-        this.username = username;
-        this.authToken = authToken;
-      }
-
-      // Getters and setters...
-      public String getUsername() {
-        return username;
-      }
-
-      public void setUsername(String username) {
-        this.username = username;
-      }
-
-      public String getAuthToken() {
-        return authToken;
-      }
-
-      public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-      }
-    }
   }
 }
