@@ -33,8 +33,9 @@ public class Handler {
       if (!req.body().contains("\"gameName\":")) {
         throw new BadRequestException("No gameName provided");
       }
+      GameData gameData = new Gson().fromJson(req.body(), GameData.class);
       String authToken = req.headers("authorization");
-      int gameID =  gameService.createGame(authToken);
+      int gameID =  gameService.createGame(authToken, gameData.gameName());
 
       resp.status(200);
       return "{ \"gameID\": %d }".formatted(gameID);
