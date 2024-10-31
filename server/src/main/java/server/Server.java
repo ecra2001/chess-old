@@ -19,7 +19,7 @@ public class Server {
 
     public Server() {
 
-        userDAO = new MemoryRep.MemoryUser();
+        userDAO = new SQLUser();
         authDAO = new MemoryRep.MemoryAuth();
         gameDAO = new MemoryRep.MemoryGame();
 
