@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.HashSet;
 public class SQLAuth implements AuthRep {
   public SQLAuth() {
+    try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+      throw new RuntimeException(ex);
+    }
     try (var conn = DatabaseManager.getConnection()) {
       conn.setCatalog("chess");
       var createTestTable = """            

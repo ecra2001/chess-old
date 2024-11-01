@@ -29,6 +29,9 @@ public class Server {
         userHandler = new Handler.UserHandler(userService);
         gameHandler = new Handler.GameHandler(gameService);
 
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public int run(int desiredPort) {

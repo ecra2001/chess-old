@@ -5,6 +5,9 @@ import java.sql.SQLException;
 
 public class SQLUser implements UserRep {
     public SQLUser() {
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
         try (var conn = DatabaseManager.getConnection()) {
             conn.setCatalog("chess");
             var createTestTable = """            
