@@ -12,11 +12,11 @@ public class SQLUser implements UserRep {
             conn.setCatalog("chess");
             var createTestTable = """            
                     CREATE TABLE if NOT EXISTS user (
-                                    username VARCHAR(255) NOT NULL,
-                                    password VARCHAR(255) NOT NULL,
-                                    email VARCHAR(255),
-                                    PRIMARY KEY (username)
-                                    )""";
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(255),
+                    PRIMARY KEY (username)
+                    )""";
             try (var createTableStatement = conn.prepareStatement(createTestTable)) {
                 createTableStatement.executeUpdate();
             }

@@ -13,10 +13,10 @@ public class SQLAuth implements AuthRep {
       conn.setCatalog("chess");
       var createTestTable = """            
                     CREATE TABLE if NOT EXISTS auth (
-                                    username VARCHAR(255) NOT NULL,
-                                    authToken VARCHAR(255) NOT NULL,
-                                    PRIMARY KEY (authToken)
-                                    )""";
+                    username VARCHAR(255) NOT NULL,
+                    authToken VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (authToken)
+                    )""";
       try (var createTableStatement = conn.prepareStatement(createTestTable)) {
         createTableStatement.executeUpdate();
       }

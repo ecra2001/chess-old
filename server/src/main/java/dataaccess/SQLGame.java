@@ -13,13 +13,13 @@ public class SQLGame implements GameRep {
       conn.setCatalog("chess");
       var createTestTable = """            
                     CREATE TABLE if NOT EXISTS game (
-                                    gameID INT NOT NULL,
-                                    whiteUsername VARCHAR(255),
-                                    blackUsername VARCHAR(255),
-                                    gameName VARCHAR(255),
-                                    chessGame TEXT,
-                                    PRIMARY KEY (gameID)
-                                    )""";
+                    gameID INT NOT NULL,
+                    whiteUsername VARCHAR(255),
+                    blackUsername VARCHAR(255),
+                    gameName VARCHAR(255),
+                    chessGame TEXT,
+                    PRIMARY KEY (gameID)
+                    )""";
       try (var createTableStatement = conn.prepareStatement(createTestTable)) {
         createTableStatement.executeUpdate();
       }
