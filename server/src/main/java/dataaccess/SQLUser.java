@@ -1,6 +1,6 @@
 package dataaccess;
 import model.UserData;
-
+import org.mindrot.jbcrypt.BCrypt;
 import java.sql.SQLException;
 
 public class SQLUser implements UserRep {
@@ -44,8 +44,9 @@ public class SQLUser implements UserRep {
     public void createUser(UserData user) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)")) {
+                String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
                 statement.setString(1, user.username());
-                statement.setString(2, user.password());
+                statement.setString(2, hashedPassword);
                 statement.setString(3, user.email());
                 statement.executeUpdate();
             }
@@ -56,7 +57,7 @@ public class SQLUser implements UserRep {
     @Override
     public boolean authenticateUser(String username, String password) throws DataAccessException {
         UserData user = getUser(username);
-        return user.password().equals(password);
+        return BCrypt.checkpw(password, user.password());
     }
     @Override
     public void clear() {
