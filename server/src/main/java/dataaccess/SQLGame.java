@@ -49,7 +49,7 @@ public class SQLGame implements GameRep {
     return games;
   }
   @Override
-  public void createGame(GameData game) {
+  public void createGame(GameData game) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
       try (var statement = conn.prepareStatement("INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)")) {
         statement.setInt(1, game.gameID());
@@ -59,8 +59,8 @@ public class SQLGame implements GameRep {
         statement.setString(5, serializeGame(game.game()));
         statement.executeUpdate();
       }
-    } catch (SQLException | DataAccessException e) {
-      return;
+    } catch (SQLException e) {
+      throw new DataAccessException(e.getMessage());
     }
   }
   @Override
@@ -95,7 +95,7 @@ public class SQLGame implements GameRep {
     }
   }
   @Override
-  public void updateGame(GameData game) {
+  public void updateGame(GameData game) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
       try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?")) {
         statement.setString(1, game.whiteUsername());
@@ -103,10 +103,11 @@ public class SQLGame implements GameRep {
         statement.setString(3, game.gameName());
         statement.setString(4, serializeGame(game.game()));
         statement.setInt(5, game.gameID());
-        statement.executeUpdate();
+        int rowsUpdated = statement.executeUpdate();
+        if (rowsUpdated == 0) throw new DataAccessException("Item requested to be updated not found");
       }
-    } catch (SQLException | DataAccessException e) {
-      return;
+    } catch (SQLException e) {
+      throw new DataAccessException(e.getMessage());
     }
   }
   @Override
