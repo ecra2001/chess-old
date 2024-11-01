@@ -10,7 +10,7 @@ public class SQLAuth implements AuthRep {
       throw new RuntimeException(ex);
     }
     try (var conn = DatabaseManager.getConnection()) {
-      conn.setCatalog("chess");
+
       var createTestTable = """            
                     CREATE TABLE if NOT EXISTS auth (
                     username VARCHAR(255) NOT NULL,

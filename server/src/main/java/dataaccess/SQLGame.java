@@ -10,7 +10,7 @@ public class SQLGame implements GameRep {
       throw new RuntimeException(ex);
     }
     try (var conn = DatabaseManager.getConnection()) {
-      conn.setCatalog("chess");
+
       var createTestTable = """            
                     CREATE TABLE if NOT EXISTS game (
                     gameID INT NOT NULL,
