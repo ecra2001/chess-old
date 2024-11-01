@@ -82,13 +82,24 @@ class SQLAuthDAOTest {
   void deleteAuthPositive() throws DataAccessException, SQLException {
     dao.addAuth(defaultAuth);
 
-    dao.deleteAuth(defaultAuth.authToken());
-
+    // Verify the auth record exists before deletion
     try (var conn = DatabaseManager.getConnection()) {
-      try (var statement = conn.prepareStatement("SELECT username, authToken FROM auth WHERE username=?")) {
+      try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
         statement.setString(1, defaultAuth.username());
         try (var results = statement.executeQuery()) {
-          assertFalse(results.next()); //There should be no elements
+          assertTrue(results.next()); // Ensure the auth record exists
+        }
+      }
+    }
+
+    dao.deleteAuth(defaultAuth.authToken());
+
+    // Verify the record is deleted
+    try (var conn = DatabaseManager.getConnection()) {
+      try (var statement = conn.prepareStatement("SELECT username FROM auth WHERE username=?")) {
+        statement.setString(1, defaultAuth.username());
+        try (var results = statement.executeQuery()) {
+          assertFalse(results.next()); // There should be no elements
         }
       }
     }
@@ -118,11 +129,13 @@ class SQLAuthDAOTest {
     dao.addAuth(defaultAuth);
     dao.clear();
 
+    // Verify the auth table is completely empty
     try (var conn = DatabaseManager.getConnection()) {
-      try (var statement = conn.prepareStatement("SELECT username, authToken FROM auth WHERE username=?")) {
-        statement.setString(1, defaultAuth.username());
+      try (var statement = conn.prepareStatement("SELECT COUNT(*) FROM auth")) {
         try (var results = statement.executeQuery()) {
-          assertFalse(results.next()); //There should be no elements
+          results.next();
+          int count = results.getInt(1);
+          assertEquals(0, count); // The table should have zero elements
         }
       }
     }
