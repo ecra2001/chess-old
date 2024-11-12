@@ -10,7 +10,7 @@ import java.util.Map;
 public class ServerFacade {
   String baseURL = "http://localhost:8080";
   String authToken;
-  ServerFacade() {
+  public ServerFacade() {
   }
   public boolean register(String username, String password, String email) {
     var body = Map.of("username", username, "password", password, "email", email);
