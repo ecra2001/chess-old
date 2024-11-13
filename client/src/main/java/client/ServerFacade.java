@@ -82,30 +82,39 @@ public class ServerFacade {
   private Map request (String method, String endpoint) {
     return request(method, endpoint, null);
   }
+
+  private String requestString(String method, String endpoint) {
+    return requestString(method, endpoint, null);
+  }
+
+  private HttpURLConnection createHttpRequest(String method, String endpoint, String body) throws URISyntaxException, IOException {
+    URI uri = new URI(baseURL + endpoint);
+    HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+    http.setRequestMethod(method);
+
+    if (authToken != null) {
+      http.addRequestProperty("authorization", authToken);
+    }
+    if (body != null) {
+      http.setDoOutput(true);
+      http.addRequestProperty("Content-Type", "application/json");
+      try (var outputStream = http.getOutputStream()) {
+        outputStream.write(body.getBytes());
+      }
+    }
+    http.connect();
+    return http;
+  }
+
   private Map request(String method, String endpoint, String body) {
     Map respMap;
     try {
-      URI uri = new URI(baseURL + endpoint);
-      HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
-      http.setRequestMethod(method);
-      if (authToken != null) {
-        http.addRequestProperty("authorization", authToken);
-      }
-      if (!Objects.equals(body, null)) {
-        http.setDoOutput(true);
-        http.addRequestProperty("Content-Type", "application/json");
-        try (var outputStream = http.getOutputStream()) {
-          outputStream.write(body.getBytes());
-        }
-      }
-      http.connect();
-      try {
-        if (http.getResponseCode() == 401) {
-          return Map.of("Error", 401);
-        }
-      } catch (IOException e) {
+      HttpURLConnection http = createHttpRequest(method, endpoint, body);
+
+      if (http.getResponseCode() == 401) {
         return Map.of("Error", 401);
       }
+
       try (InputStream respBody = http.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(respBody);
         respMap = new Gson().fromJson(inputStreamReader, Map.class);
@@ -115,33 +124,16 @@ public class ServerFacade {
     }
     return respMap;
   }
-  private String requestString(String method, String endpoint) {
-    return requestString(method, endpoint, null);
-  }
+
   private String requestString(String method, String endpoint, String body) {
     String resp;
     try {
-      URI uri = new URI(baseURL + endpoint);
-      HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
-      http.setRequestMethod(method);
-      if (authToken != null) {
-        http.addRequestProperty("authorization", authToken);
-      }
-      if (!Objects.equals(body, null)) {
-        http.setDoOutput(true);
-        http.addRequestProperty("Content-Type", "application/json");
-        try (var outputStream = http.getOutputStream()) {
-          outputStream.write(body.getBytes());
-        }
-      }
-      http.connect();
-      try {
-        if (http.getResponseCode() == 401) {
-          return "Error: 401";
-        }
-      } catch (IOException e) {
+      HttpURLConnection http = createHttpRequest(method, endpoint, body);
+
+      if (http.getResponseCode() == 401) {
         return "Error: 401";
       }
+
       try (InputStream respBody = http.getInputStream()) {
         InputStreamReader inputStreamReader = new InputStreamReader(respBody);
         resp = readerToString(inputStreamReader);
@@ -151,6 +143,7 @@ public class ServerFacade {
     }
     return resp;
   }
+
   private String readerToString(InputStreamReader reader) {
     StringBuilder sb = new StringBuilder();
     try {
