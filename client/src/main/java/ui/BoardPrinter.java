@@ -22,7 +22,9 @@ public class BoardPrinter {
         output.append(boardRow(row, reversed));
       }
       output.append(startingRow(reversed));
-      if (j < 1) output.append("\n");
+      if (j < 1) {
+        output.append("\n");
+      }
       reversed = false;
     }
     output.append(RESET_TEXT_BOLD_FAINT);
