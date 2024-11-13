@@ -50,7 +50,7 @@ public class Service {
         ChessBoard board = new ChessBoard();
         board.resetBoard();
         game.setBoard(board);
-        gameDAO.createGame(new GameData(gameID, null, null, gameName, game));
+        gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
       } catch (DataAccessException e) {
         throw new BadRequestException(e.getMessage());
       }
