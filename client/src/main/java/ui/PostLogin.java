@@ -1,8 +1,12 @@
 package ui;
+import chess.ChessBoard;
+import chess.ChessGame;
 import model.GameData;
 import client.ServerFacade;
+import ui.EscapeSequences.*;
 import java.util.*;
 import static java.lang.System.out;
+import static ui.EscapeSequences.*;
 public class PostLogin {
   ServerFacade server;
   List<GameData> games;
@@ -12,6 +16,7 @@ public class PostLogin {
   }
   public void run() {
     boolean loggedIn = true;
+    out.print(RESET_TEXT_COLOR + RESET_BG_COLOR);
     while (loggedIn) {
       String[] input = getUserInput();
       switch (input[0]) {
@@ -42,12 +47,30 @@ public class PostLogin {
             printJoin();
             break;
           }
-          if (server.joinGame(games.get(Integer.parseInt(input[1])).gameID(), input[2].toUpperCase())) {
+          GameData joinGame = games.get(Integer.parseInt(input[1]));
+          if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
+            new BoardPrinter(joinGame.game().getBoard()).printBoard();
             break;
           } else {
             out.println("Game does not exist or color taken");
             printJoin();
+            break;
+          }
+        case "observe":
+          if (input.length != 2) {
+            out.println("Please provide a game ID");
+            printObserve();
+            break;
+          }
+          GameData observeGame = games.get(Integer.parseInt(input[1]));
+          if (server.joinGame(observeGame.gameID(), null)) {
+            out.println("You have joined the game as an observer");
+            new BoardPrinter(observeGame.game().getBoard()).printBoard();
+            break;
+          } else {
+            out.println("Game does not exist");
+            printObserve();
             break;
           }
         default:
