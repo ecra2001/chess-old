@@ -1,11 +1,14 @@
 package ui;
+import model.GameData;
 import client.ServerFacade;
-import java.util.Scanner;
+import java.util.*;
 import static java.lang.System.out;
 public class PostLogin {
   ServerFacade server;
+  List<GameData> games;
   public PostLogin(ServerFacade server) {
     this.server = server;
+    games = new ArrayList<>();
   }
   public void run() {
     boolean loggedIn = true;
@@ -21,7 +24,8 @@ public class PostLogin {
           loggedIn = false;
           break;
         case "list":
-          out.println(server.listGames());
+          refreshGames();
+          printGames();
           break;
         case "create":
           if (input.length != 2) {
@@ -38,7 +42,7 @@ public class PostLogin {
             printJoin();
             break;
           }
-          if (server.joinGame(Integer.parseInt(input[1]), input[2])) {
+          if (server.joinGame(games.get(Integer.parseInt(input[1])).gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
             break;
           } else {
@@ -77,5 +81,18 @@ public class PostLogin {
   }
   private void printObserve() {
     out.println("observe <ID> - observe a game");
+  }
+  private void refreshGames() {
+    games = new ArrayList<>();
+    HashSet<GameData> gameList = server.listGames();
+    games.addAll(gameList);
+  }
+  private void printGames() {
+    for (int i = 0; i < games.size(); i++) {
+      GameData game = games.get(i);
+      String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
+      String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
+      out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i, game.gameName(), whiteUser, blackUser);
+    }
   }
 }

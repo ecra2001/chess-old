@@ -1,5 +1,7 @@
 package service;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import dataaccess.GameRep;
 import dataaccess.AuthRep;
 import dataaccess.UserRep;
@@ -44,7 +46,11 @@ public class Service {
         gameID = ThreadLocalRandom.current().nextInt(1, 10000);
       } while (gameDAO.gameExists(gameID));
       try {
-        gameDAO.createGame(new GameData(gameID, null, null, gameName, null));
+        ChessGame game = new ChessGame();
+        ChessBoard board = new ChessBoard();
+        board.resetBoard();
+        game.setBoard(board);
+        gameDAO.createGame(new GameData(gameID, null, null, gameName, game));
       } catch (DataAccessException e) {
         throw new BadRequestException(e.getMessage());
       }
