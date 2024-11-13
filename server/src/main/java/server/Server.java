@@ -58,10 +58,13 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object clear(Request req, Response resp) {
+    public void clearDB() {
 
         userService.clear();
         gameService.clear(gameDAO);
+    }
+    private Object clear(Request req, Response resp) {
+        clearDB();
 
         resp.status(200);
         return "{}";

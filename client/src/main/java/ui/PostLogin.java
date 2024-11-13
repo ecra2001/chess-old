@@ -26,6 +26,7 @@ public class PostLogin {
           printHelpMenu();
           break;
         case "logout":
+          server.logout();
           loggedIn = false;
           break;
         case "list":
