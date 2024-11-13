@@ -9,5 +9,9 @@ public class Main {
         ServerFacade server = new ServerFacade();
         System.out.println(server.register("username", "password", "email"));
         System.out.println(server.login("username", "password"));
+        System.out.println(server.createGame("game1"));
+        System.out.println(server.listGames());
+        System.out.println(server.joinGame(7957, "WHITE"));
+        System.out.println(server.listGames());
     }
 }
