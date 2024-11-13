@@ -63,7 +63,12 @@ public class ServerFacade {
     return games.games();
   }
   public boolean joinGame(int gameId, String playerColor) {
-    var body = Map.of("gameID", gameId, "playerColor", playerColor);
+    Map body;
+    if (playerColor != null) {
+      body = Map.of("gameID", gameId, "playerColor", playerColor);
+    } else {
+      body = Map.of("gameID", gameId);
+    }
     var jsonBody = new Gson().toJson(body);
     Map resp = request("PUT", "/game", jsonBody);
     return !resp.containsKey("Error");
