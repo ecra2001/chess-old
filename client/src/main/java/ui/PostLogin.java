@@ -40,7 +40,7 @@ public class PostLogin {
             break;
           }
           int gameID = server.createGame(input[1]);
-          out.printf("Created game, ID: %d%n", gameID);
+          out.printf("Created game");
           break;
         case "join":
           if (input.length != 3) {
@@ -51,7 +51,7 @@ public class PostLogin {
           GameData joinGame = games.get(Integer.parseInt(input[1]));
           if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
             out.println("You have joined the game");
-            new BoardPrinter(joinGame.game().getBoard()).printBoard();
+            new BoardPrinter(new ChessGame().getBoard()).printBoard();
             break;
           } else {
             out.println("Game does not exist or color taken");
@@ -112,7 +112,7 @@ public class PostLogin {
     games.addAll(gameList);
   }
   private void printGames() {
-    for (int i = 0; i < games.size(); i++) {
+    for (int i = 1; i < games.size(); i++) {
       GameData game = games.get(i);
       String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
       String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
