@@ -94,7 +94,7 @@ public class PostLogin {
     printJoin();
     printObserve();
     out.println("logout - log out of current user");
-    out.println("quit - stop playing");
+    // out.println("quit - stop playing");
     out.println("help - show this menu");
   }
   private void printCreate() {
