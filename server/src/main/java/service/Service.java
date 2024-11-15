@@ -56,6 +56,7 @@ public class Service {
       }
       return gameID;
     }
+
     /***
      * @param authToken authToken of user
      * @param gameID gameID of the game to join
