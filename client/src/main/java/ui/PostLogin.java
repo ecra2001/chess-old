@@ -41,6 +41,7 @@ public class PostLogin {
           }
           int gameID = server.createGame(input[1]);
           out.printf("Created game");
+          refreshGames();
           break;
         case "join":
           if (input.length != 3) {
@@ -48,35 +49,41 @@ public class PostLogin {
             printJoin();
             break;
           }
-          GameData joinGame = games.get(Integer.parseInt(input[1]));
-          if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
-            out.println("You have joined the game");
-            new BoardPrinter(new ChessGame().getBoard()).printBoard();
-            break;
+          int gameIndexToJoin = Integer.parseInt(input[1]) - 1;  // Subtract 1 to match the actual list index
+          if (gameIndexToJoin >= 0 && gameIndexToJoin < games.size()) {
+            GameData joinGame = games.get(gameIndexToJoin);
+            if (server.joinGame(joinGame.gameID(), input[2].toUpperCase())) {
+              out.println("You have joined the game");
+              new BoardPrinter(new ChessGame().getBoard()).printBoard();
+            } else {
+              out.println("Game does not exist or color taken");
+              printJoin();
+            }
           } else {
-            out.println("Game does not exist or color taken");
+            out.println("Invalid game ID");
             printJoin();
-            break;
           }
+          break;
         case "observe":
           if (input.length != 2) {
             out.println("Please provide a game ID");
             printObserve();
             break;
           }
-          GameData observeGame = games.get(Integer.parseInt(input[1]));
-          if (server.joinGame(observeGame.gameID(), null)) {
-            out.println("You have joined the game as an observer");
-            new BoardPrinter(observeGame.game().getBoard()).printBoard();
-            break;
+          int gameIndexToObserve = Integer.parseInt(input[1]) - 1;  // Subtract 1 to match the actual list index
+          if (gameIndexToObserve >= 0 && gameIndexToObserve < games.size()) {
+            GameData observeGame = games.get(gameIndexToObserve);
+            if (server.joinGame(observeGame.gameID(), null)) {
+              out.println("You have joined the game as an observer");
+              new BoardPrinter(observeGame.game().getBoard()).printBoard();
+            } else {
+              out.println("Game does not exist");
+              printObserve();
+            }
           } else {
-            out.println("Game does not exist");
+            out.println("Invalid game ID");
             printObserve();
-            break;
           }
-        default:
-          out.println("Command not recognized, please try again");
-          printHelpMenu();
           break;
       }
     }
@@ -112,11 +119,11 @@ public class PostLogin {
     games.addAll(gameList);
   }
   private void printGames() {
-    for (int i = 1; i < games.size(); i++) {
+    for (int i = 0; i < games.size(); i++) {
       GameData game = games.get(i);
       String whiteUser = game.whiteUsername() != null ? game.whiteUsername() : "open";
       String blackUser = game.blackUsername() != null ? game.blackUsername() : "open";
-      out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i, game.gameName(), whiteUser, blackUser);
+      out.printf("%d -- Game Name: %s  |  White User: %s  |  Black User: %s %n", i+1, game.gameName(), whiteUser, blackUser);
     }
   }
 }
