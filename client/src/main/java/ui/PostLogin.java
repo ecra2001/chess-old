@@ -115,7 +115,8 @@ public class PostLogin {
   }
   private void refreshGames() {
     games = new ArrayList<>();
-    HashSet<GameData> gameList = server.listGames();
+    List<GameData> gameList = server.listGames();
+    Collections.reverse(gameList);  // Reverse the list to maintain correct order
     games.addAll(gameList);
   }
   private void printGames() {

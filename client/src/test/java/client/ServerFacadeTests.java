@@ -4,6 +4,7 @@ import client.ServerFacade;
 import org.junit.jupiter.api.*;
 import server.Server;
 import java.util.HashSet;
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -91,7 +92,7 @@ public class ServerFacadeTests {
 
     @Test
     public void listGamesNegative() {
-        assertEquals(facade.listGames(), HashSet.newHashSet(8));
+        assertEquals(facade.listGames(), new ArrayList<>());  // Check for an empty list
     }
 
     @Test

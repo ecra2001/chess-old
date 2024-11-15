@@ -60,13 +60,18 @@ public class ServerFacade {
     double gameID = (double) resp.get("gameID");
     return (int) gameID;
   }
-  public HashSet<GameData> listGames() {
+  public List<GameData> listGames() {
     String resp = requestString("GET", "/game");
+
     if (resp.contains("Error")) {
-      return HashSet.newHashSet(8);
+      return new ArrayList<>();  // Return an empty list if there's an error
     }
+
+    // Parse the response into a GamesList object using Gson
     GamesList games = new Gson().fromJson(resp, GamesList.class);
-    return games.games();
+
+    // Return the list of games (ensure it's a List instead of HashSet)
+    return new ArrayList<>(games.games());  // Convert the HashSet to a List
   }
   public boolean joinGame(int gameId, String playerColor) {
     Map body;

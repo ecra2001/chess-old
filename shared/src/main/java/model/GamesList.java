@@ -1,5 +1,5 @@
 package model;
 import java.util.HashSet;
 import java.util.List;
-public record GamesList(HashSet<GameData> games) {
+public record GamesList(List<GameData> games) {
 }
