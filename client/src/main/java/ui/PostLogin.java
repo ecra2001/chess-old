@@ -73,13 +73,9 @@ public class PostLogin {
           int gameIndexToObserve = Integer.parseInt(input[1]) - 1;  // Subtract 1 to match the actual list index
           if (gameIndexToObserve >= 0 && gameIndexToObserve < games.size()) {
             GameData observeGame = games.get(gameIndexToObserve);
-            if (server.joinGame(observeGame.gameID(), null)) {
-              out.println("You have joined the game as an observer");
-              new BoardPrinter(observeGame.game().getBoard()).printBoard();
-            } else {
-              out.println("Game does not exist");
-              printObserve();
-            }
+            out.println("You have joined the game as an observer");
+            new BoardPrinter(new ChessGame().getBoard()).printBoard();
+            // new BoardPrinter(observeGame.game().getBoard()).printBoard();
           } else {
             out.println("Invalid game ID");
             printObserve();
