@@ -3,8 +3,8 @@
 //import chess.ChessMove;
 //import com.google.gson.Gson;
 //import model.GameData;
-//import webSocketMessages.serverMessages.ServerMessage;
-//import webSocketMessages.userCommands.*;
+//import websocket.messages.ServerMessage;
+//import websocket.commands.*;
 //
 //import java.io.IOException;
 //import java.util.*;

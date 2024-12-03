@@ -4,10 +4,10 @@
 //import com.google.gson.Gson;
 //import ui.BoardPrinter;
 //import ui.Gameplay;
-//import webSocketMessages.serverMessages.Error;
-//import webSocketMessages.serverMessages.LoadGame;
-//import webSocketMessages.serverMessages.Notification;
-//import webSocketMessages.serverMessages.ServerMessage;
+//import websocket.messages.Error;
+//import websocket.messages.LoadGame;
+//import websocket.messages.Notification;
+//import websocket.messages.ServerMessage;
 //
 //import javax.websocket.*;
 //import java.io.IOException;
