@@ -1,15 +1,13 @@
 //package client;
+//import chess.ChessGame;
+//import chess.ChessMove;
 //import com.google.gson.Gson;
 //import model.GameData;
-//import model.GamesList;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.net.HttpURLConnection;
-//import java.net.URI;
-//import java.net.URISyntaxException;
 //import webSocketMessages.serverMessages.ServerMessage;
 //import webSocketMessages.userCommands.*;
+//
+//import java.io.IOException;
+//import java.util.*;
 //import java.util.*;
 //public class ServerFacade {
 //  HTTPCommunicator http;
