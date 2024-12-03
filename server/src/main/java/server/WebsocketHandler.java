@@ -65,6 +65,7 @@
 //    }
 //  }
 //
+//  // Combine Join and Observe to CONNECT
 //  private void handleJoinPlayer(Session session, JoinPlayer command) throws IOException {
 //
 //    try {
