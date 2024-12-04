@@ -18,7 +18,7 @@ public class HTTPCommunicator {
   ServerFacade facade;
 
   public HTTPCommunicator(ServerFacade facade, String serverDomain) {
-    baseURL = "http://" + serverDomain;
+    baseURL = serverDomain;
     this.facade = facade;
   }
 
