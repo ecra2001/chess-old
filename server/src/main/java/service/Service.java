@@ -34,6 +34,34 @@ public class Service {
       return gameDAO.listGames();
     }
 
+    public void updateGame(String authToken, GameData gameData) throws UnauthorizedException, BadRequestException {
+      try {
+        authDAO.getAuth(authToken);
+      } catch (DataAccessException e) {
+        throw new UnauthorizedException();
+      }
+
+      try {
+        gameDAO.updateGame(gameData);
+      } catch (DataAccessException e) {
+        throw new BadRequestException(e.getMessage());
+      }
+    }
+
+    public GameData getGameData(String authToken, int gameID) throws UnauthorizedException, BadRequestException {
+      try {
+        authDAO.getAuth(authToken);
+      } catch (DataAccessException e) {
+        throw new UnauthorizedException();
+      }
+
+      try {
+        return gameDAO.getGame(gameID);
+      } catch (DataAccessException e) {
+        throw new BadRequestException(e.getMessage());
+      }
+    }
+
     public int createGame(String authToken, String gameName) throws UnauthorizedException, BadRequestException {
       try {
         authDAO.getAuth(authToken);
@@ -132,7 +160,6 @@ public class Service {
       return authData;
     }
 
-    // throws DataAccessException if the username does not exist or the password is incorrect
     public AuthData loginUser(UserData userData) throws UnauthorizedException {
       boolean userAuthenticated;
       try {
@@ -161,10 +188,17 @@ public class Service {
       authDAO.deleteAuth(authToken);
     }
 
-
     public void clear() {
       userDAO.clear();
       authDAO.clear();
+    }
+
+    public AuthData getAuth(String authToken) throws UnauthorizedException {
+      try {
+        return authDAO.getAuth(authToken);
+      } catch (DataAccessException e) {
+        throw new UnauthorizedException();
+      }
     }
   }
 }

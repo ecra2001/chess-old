@@ -4,6 +4,8 @@ import service.Service;
 import spark.*;
 import dataaccess.*;
 import service.Service.GameService;
+import org.eclipse.jetty.websocket.api.Session;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
 
@@ -11,11 +13,13 @@ public class Server {
     AuthRep authDAO;
     GameRep gameDAO;
 
-    Service.UserService userService;
-    GameService gameService;
+    static Service.UserService userService;
+    static GameService gameService;
 
     Handler.UserHandler userHandler;
     Handler.GameHandler gameHandler;
+
+    static ConcurrentHashMap<Session, Integer> gameSessions = new ConcurrentHashMap<>();
 
     public Server() {
 
@@ -38,16 +42,22 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/connect", WebsocketHandler.class);
+
         Spark.delete("/db", this::clear);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.delete("/session", userHandler::logout);
+
         Spark.get("/game", gameHandler::listGames);
         Spark.post("/game", gameHandler::createGame);
         Spark.put("/game", gameHandler::joinGame);
+
         Spark.exception(BadRequestException.class, this::badRequestExceptionHandler);
         Spark.exception(UnauthorizedException.class, this::unauthorizedExceptionHandler);
         Spark.exception(Exception.class, this::genericExceptionHandler);
+
 
         Spark.awaitInitialization();
         return Spark.port();

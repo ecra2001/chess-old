@@ -61,8 +61,8 @@
 //
 //  private void handleConnect(Session session, Connect command) throws IOException {
 //    try {
-//      AuthData auth = Server.userService.getAuth(command.getAuthString());
-//      GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
+//      AuthData auth = Server.userService.getAuth(command.getAuthToken());
+//      GameData game = Server.gameService.getGameData(command.getAuthToken(), command.getGameID());
 //
 //      String role;
 //      if (Objects.equals(auth.username(), game.whiteUsername())) {
@@ -88,8 +88,8 @@
 //
 //  private void handleMakeMove(Session session, MakeMove command) throws IOException {
 //    try {
-//      AuthData auth = Server.userService.getAuth(command.getAuthString());
-//      GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
+//      AuthData auth = Server.userService.getAuth(command.getAuthToken());
+//      GameData game = Server.gameService.getGameData(command.getAuthToken(), command.getGameID());
 //      ChessGame.TeamColor userColor = getTeamColor(auth.username(), game);
 //      if (userColor == null) {
 //        sendError(session, new Error("Error: You are observing this game"));
@@ -144,7 +144,7 @@
 //
 //  private void handleLeave(Session session, Leave command) throws IOException {
 //    try {
-//      AuthData auth = Server.userService.getAuth(command.getAuthString());
+//      AuthData auth = Server.userService.getAuth(command.getAuthToken());
 //
 //      Notification notif = new Notification("%s has left the game".formatted(auth.username()));
 //      broadcastMessage(session, notif);
@@ -157,8 +157,8 @@
 //
 //  private void handleResign(Session session, Resign command) throws IOException {
 //    try {
-//      AuthData auth = Server.userService.getAuth(command.getAuthString());
-//      GameData game = Server.gameService.getGameData(command.getAuthString(), command.getGameID());
+//      AuthData auth = Server.userService.getAuth(command.getAuthToken());
+//      GameData game = Server.gameService.getGameData(command.getAuthToken(), command.getGameID());
 //      ChessGame.TeamColor userColor = getTeamColor(auth.username(), game);
 //
 //      String opponentUsername = userColor == ChessGame.TeamColor.WHITE ? game.blackUsername() : game.whiteUsername();
