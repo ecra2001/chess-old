@@ -48,6 +48,10 @@ public class Service {
       }
     }
 
+    public void updateGameData(GameData gameData) throws DataAccessException {
+      gameDAO.updateGame(gameData);
+    }
+
     public GameData getGameData(String authToken, int gameID) throws UnauthorizedException, BadRequestException {
       try {
         authDAO.getAuth(authToken);

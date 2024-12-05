@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.BadRequestException;
+import dataaccess.DataAccessException;
 import dataaccess.UnauthorizedException;
 import model.AuthData;
 import model.GameData;
@@ -144,14 +145,41 @@ public class WebsocketHandler {
 
   private void handleLeave(Session session, Leave command) throws IOException {
     try {
+      // Authenticate the user
       AuthData auth = Server.userService.getAuth(command.getAuthToken());
 
+      // Retrieve the game from the database
+      GameData gameData = Server.gameService.getGameData(command.getAuthToken(), command.getGameID());
+
+      // Check if the user is one of the players
+      if (auth.username().equals(gameData.whiteUsername())) {
+        // If the user is the white player, create a new GameData with whiteUsername set to null
+        gameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+      } else if (auth.username().equals(gameData.blackUsername())) {
+        // If the user is the black player, create a new GameData with blackUsername set to null
+        gameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+      } else {
+        // If the user is neither white nor black, treat them as an observer
+        // Since you're not tracking observers in GameData, just send a notification and close the session
+        Notification notif = new Notification("%s has left the game".formatted(auth.username()));
+        broadcastMessage(session, notif);
+        session.close();
+        return; // Do not modify game data for observers
+      }
+
+      // Persist the updated game state if a player left
+      Server.gameService.updateGameData(gameData);
+
+      // Notify others about the player leaving
       Notification notif = new Notification("%s has left the game".formatted(auth.username()));
       broadcastMessage(session, notif);
 
+      // Close the WebSocket session
       session.close();
     } catch (UnauthorizedException e) {
       sendError(session, new Error("Error: Not authorized"));
+    } catch (BadRequestException | DataAccessException e) {
+      sendError(session, new Error("Error: " + e.getMessage()));
     }
   }
 
