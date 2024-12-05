@@ -18,7 +18,12 @@ public class HTTPCommunicator {
   ServerFacade facade;
 
   public HTTPCommunicator(ServerFacade facade, String serverDomain) {
-    baseURL = serverDomain;
+    // Check if the serverDomain already starts with "http://" or "https://"
+    if (serverDomain.startsWith("http://") || serverDomain.startsWith("https://")) {
+      baseURL = serverDomain; // Use as-is
+    } else {
+      baseURL = "http://" + serverDomain; // Add "http://"
+    }
     this.facade = facade;
   }
 
