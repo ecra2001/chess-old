@@ -128,6 +128,9 @@ public class SQLGame implements GameRep {
     return new Gson().toJson(game);
   }
   private ChessGame deserializeGame(String serializedGame) {
+    if (serializedGame.equals("null")) {
+      return new ChessGame(); // Return a new default ChessGame object
+    }
     return new Gson().fromJson(serializedGame, ChessGame.class);
   }
 }
