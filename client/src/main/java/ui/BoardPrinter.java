@@ -28,32 +28,24 @@ public class BoardPrinter {
     output.append(SET_TEXT_BOLD);
 
     Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
-    HashSet<ChessPosition> possibleSquares = HashSet.newHashSet(possibleMoves != null ? possibleMoves.size() : 0);
+    HashSet<ChessPosition> possibleSquares = new HashSet<>(possibleMoves != null ? possibleMoves.size() : 0);
     if (possibleMoves != null) {
       for (ChessMove move : possibleMoves) {
         possibleSquares.add(move.getEndPosition());
       }
     }
 
-    // if reversed, then it is printed with black forward
+    // Default to white perspective if no specific team color is provided
     boolean reversed = color == ChessGame.TeamColor.BLACK;
-    int printCount = color == null ? 2 : 1;
-    for (int j = 0; j < printCount; j++) {
 
-      output.append(startingRow(reversed));
-
-      for (int i = 8; i > 0; i--) {
-        int row = !reversed ? i : (i * -1) + 9;
-        output.append(boardRow(row, reversed, selectedPos, possibleSquares));
-      }
-
-      output.append(startingRow(reversed));
-      if (j < printCount - 1) {
-        output.append("\n");
-      }
-
-      reversed = !reversed;
+    // Print only one perspective
+    output.append(startingRow(reversed));
+    for (int i = 8; i > 0; i--) {
+      int row = !reversed ? i : (i * -1) + 9;
+      output.append(boardRow(row, reversed, selectedPos, possibleSquares));
     }
+    output.append(startingRow(reversed));
+
     output.append(RESET_TEXT_BOLD_FAINT);
     out.println(output);
     out.printf("Turn: %s\n", game.getTeamTurn().toString());
