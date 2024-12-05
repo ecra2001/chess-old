@@ -45,21 +45,6 @@ public class TestFactory {
         return 3000L;
     }
 
-//    static public ChessPosition startPosition(int row, int col) {
-//        return getNewPosition(row, col);
-//    }
-//
-//    static public int[][] endPositions(int[][] endPos) {
-//        return endPos;
-//    }
-
-//    static public void validateMoves(String boardText, ChessPosition startPosition, int[][] endPositions) {
-//        var board = loadBoard(boardText);
-//        var testPiece = board.getPiece(startPosition);
-//        var validMoves = loadMoves(startPosition, endPositions);
-//        validateMoves(board, testPiece, startPosition, validMoves);
-//    }
-
     static public void validateMoves(ChessBoard board, ChessPiece testPiece, ChessPosition startPosition, Set<ChessMove> validMoves) {
         var pieceMoves = new HashSet<>(testPiece.pieceMoves(board, startPosition));
         Assertions.assertEquals(validMoves, pieceMoves, "Wrong moves");
