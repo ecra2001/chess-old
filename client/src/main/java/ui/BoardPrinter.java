@@ -83,24 +83,21 @@ public class BoardPrinter {
   }
   private String squareColor(int row, int column, ChessPosition startingSquare, HashSet<ChessPosition> highlightedSquares) {
     ChessPosition square = new ChessPosition(row, column);
+
     if (square.equals(startingSquare)) {
-      return SET_BG_COLOR_BLUE;
-    }
-    else if (highlightedSquares.contains(square)) {
-      return SET_BG_COLOR_DARK_GREEN;
-    }
-    else if (Math.ceilMod(row, 2) == 0) {
-      if (Math.ceilMod(column, 2) == 0) {
-        return SET_BG_COLOR_RED;
+      return SET_BG_COLOR_BLUE; // Highlight the selected square in blue
+    } else if (highlightedSquares.contains(square)) {
+      // Use different shades of green based on the base square color
+      if (Math.ceilMod(row, 2) == 0) {
+        return Math.ceilMod(column, 2) == 0 ? SET_BG_COLOR_DARK_GREEN : SET_BG_COLOR_GREEN;
       } else {
-        return SET_BG_COLOR_LIGHT_GREY;
+        return Math.ceilMod(column, 2) == 0 ? SET_BG_COLOR_GREEN : SET_BG_COLOR_DARK_GREEN;
       }
+    } else if (Math.ceilMod(row, 2) == 0) {
+      // Original board colors: grey and red
+      return Math.ceilMod(column, 2) == 0 ? SET_BG_COLOR_RED : SET_BG_COLOR_LIGHT_GREY;
     } else {
-      if (Math.ceilMod(column, 2) == 0) {
-        return SET_BG_COLOR_LIGHT_GREY;
-      } else {
-        return SET_BG_COLOR_RED;
-      }
+      return Math.ceilMod(column, 2) == 0 ? SET_BG_COLOR_LIGHT_GREY : SET_BG_COLOR_RED;
     }
   }
   private String piece(int row, int column) {
